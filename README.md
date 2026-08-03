@@ -33,8 +33,8 @@ This is quite straightforward and involves SSH’ing into your CA10, mounting th
 1. Download the patch files for the version of your OS from here.
 2. SSH into your CA10 and run the following commands: -
 ```
-> mkdir /mnt/media/disk
-> mount /dev/md/recfs /mnt/media/disk
+mkdir /mnt/media/disk
+mount /dev/md/recfs /mnt/media/disk
 ```
 There will now be a “disk” folder under the already-shared “media” folder on your Director. The Director shares folders over the network via SMB/CIFS so this could either be accessed using a file browser (at \\director_IP\media\disk) or via an SFTP/SCP file client like WinSCP. You will need the following files: -
 
@@ -44,8 +44,8 @@ There will now be a “disk” folder under the already-shared “media” folde
 
 Close your file client, unmount the partition and clean up. Via SSH: -
 ```
-> umount -l /mnt/media/disk
-> rmdir /mnt/media/disk
+umount -l /mnt/media/disk
+rmdir /mnt/media/disk
 ```
 
 At this stage, I’d recommend saving these three files somewhere for safekeeping and making copies to work with. Rename those copies to **```recfs_FACTORY.tar.xz```**, **```kernel-lb_FACTORY.deb```** and **```kernel-modules-lb_FACTORY.deb```**. It’s possible the recovery partition will contain an older version of the OS  than the one running but this is rare. There are workarounds if this is the case.
@@ -66,7 +66,7 @@ Access to a system running an updated Linux OS is now needed (***if you do not h
 5. Open a terminal and from your folder start the script as root: -
 
 ```
-> sudo ./unified_patcher.sh
+sudo ./unified_patcher.sh
 ```
 
 6. The script will check its directory for the files and any that are missing will be flagged. The patcher will also allow you to proceed whether or not it finds all the factory files so be sure this is what you need before you continue.
@@ -95,11 +95,11 @@ The following steps are the same for both hypervisors: -
 1. Open a command prompt in the VirtualBox program folder (```C:\Program Files\Oracle\VirtualBox```) and (assuming the name of your VM is **```CA10```** and the MAC you selected is **```000FFFA1B2C3```**), run the following commands: -
 
 ```
-> VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemVendor" "Control4"
-> VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "Control4 CA-10 Automation Controller"
-> VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSerial" "000FFFA1B2C3"
-> VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemFamily" "Automation Controller"
-> VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSKU" "C4-CA10"
+VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemVendor" "Control4"
+VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "Control4 CA-10 Automation Controller"
+VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSerial" "000FFFA1B2C3"
+VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemFamily" "Automation Controller"
+VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSKU" "C4-CA10"
 ```
 >***Optional*** - you can add a serial port to monitor the boot process, diagnostic logging and use an interactive console. This is done in the VM settings by enabling Port 1, using the first available COM port of your local machine and set the Port Mode to “Host Pipe”. The path address will then be \\.\pipe\serial1 (serial1 for COM1, serial2 for COM2, etc..). Then using a telnet client, you can connect to that port (at 115200 bps) after the VM has been started. 
 
@@ -115,11 +115,11 @@ smbios.addHostVendor = "FALSE"
    1. The format is **```uuid.bios = "00 0f ff xx xx xx ee 0f-ac e2 d9 2c a3 b1 63 bb"```** where “xx” is the remaining hexadecimals to your MAC address. So based on the earlier MAC, that line will then be modified to **```uuid.bios = "00 0f ff a1 b2 c3 ee 0f-ac e2 d9 2c a3 b1 63 bb"```**.
 5. Use VirtualBox to convert the VDI file to VMDK: -
 ```
-> VBoxManage.exe clonehd lb_boot_stick.vdi lb_boot_stick_converted.vmdk --format VMDK
+VBoxManage.exe clonehd lb_boot_stick.vdi lb_boot_stick_converted.vmdk --format VMDK
 ```
 6. Upload the VMDK to the VM folder on the ESXi server, import it and then delete the original file: -
 ```
-> vmkfstools -i lb_boot_stick_converted.vmdk -d thin lb_boot_stick.vmdk && rm lb_boot_stick_converted.vmdk
+vmkfstools -i lb_boot_stick_converted.vmdk -d thin lb_boot_stick.vmdk && rm lb_boot_stick_converted.vmdk
 ```
 >***Optional*** - adding a serial port is also quite simple and helpful. The only exception is that the serial port is mapped to the IP address of the ESXi host. So, in the VM settings, select “Use Network”, make sure it is “connected” and “connected at power on”, set the direction to “Server” and enter **```telnet://5000```** for the Port URI. Click “Yield on CPU poll”. To connect to it, use a telnet client pointed at the ESXI server IP on port 5000.
 
