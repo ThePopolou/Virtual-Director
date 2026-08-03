@@ -51,7 +51,7 @@ Close your file client, unmount the partition and clean up. Via SSH: -
 At this stage, I’d recommend saving these three files somewhere for safekeeping and making copies to work with. Rename those copies to **```recfs_FACTORY.tar.xz```**, **```kernel-lb_FACTORY.deb```** and **```kernel-modules-lb_FACTORY.deb```**. It’s possible the recovery partition will contain an older version of the OS  than the one running but this is rare. There are workarounds if this is the case.
 
 ### Stage 2 - Patching and assembling the boot disk
-Access to a system running an updated Linux OS is now needed (***if you do not have one, you can download a Live CD/DVD and use VirtualBox to boot a temporary workspace in RAM to carry out the next steps***). You’ll also need to enable SSH access. Finally, make sure you have downloaded a copy of the unified patcher with associated patch files for your running Control4 OS from the [Releases](releases) section. 
+Access to a system running an updated Linux OS is now needed (***if you do not have one, you can download a Live CD/DVD and use VirtualBox to boot a temporary workspace in RAM to carry out the next steps***). You’ll also need to enable SSH access. Finally, make sure you have downloaded a copy of the unified patcher with associated patch files for your running Control4 OS from the [Releases](https://github.com/ThePopolou/Virtual-Director/releases) section. 
 
 1. In Linux, copy across the factory files and extract the downloaded patch files all to the same folder.
 2. In addition to your three factory files, you should also now have the following build files: -
