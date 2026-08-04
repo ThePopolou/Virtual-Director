@@ -18,7 +18,7 @@ Unlike other automation ecosystems currently available, Control4 do not have a d
 3. Matching patch files to the version of your current Control4 OS.
 
 ## Installation
-The build process is fairly straightforward:  you’ll need the included custom kernel, three patch files and my patching script to assemble the required files. I’ve included a bootable VDI image - you drop the patched files in, boot it in VirtualBox or ESXi (once converted to VMDK), and it will build the Director automatically from the factory scripts.
+The build process is fairly straightforward:  you’ll need the included custom kernel, three patch files, the factory filesystem and my patching script to bring it altogether. I’ve included a bootable VDI image - you drop in the patched files, boot from it in either VirtualBox or ESXi (once converted to VMDK) and it will build the Director automatically from the factory init scripts.
 
 From testing, a fully working system should be built within 3 minutes of first boot and as long as you have the patch files (which are matched to that OS version), the script will build it. 
 
