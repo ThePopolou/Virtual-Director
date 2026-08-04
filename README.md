@@ -30,7 +30,7 @@ A correct implementation will follow these three stages: -
 
 ### Stage 1: Downloading the Factory Files
 This is quite straightforward and involves SSH’ing into your CA10, mounting the recovery partition and downloading the compressed archive and boot packages. SSH access is crucial I’m afraid so without it, there is no way forward.
-1. Download the patch files for the version of your OS from here.
+1. Download the patch files for the version of your OS from [here](https://github.com/ThePopolou/Virtual-Director/releases).
 2. SSH into your CA10 and run the following commands: -
 ```
 mkdir /mnt/media/disk
