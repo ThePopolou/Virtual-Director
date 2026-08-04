@@ -69,7 +69,9 @@ Access to a system running an updated Linux OS is now needed (***if you do not h
 7. The script will check its directory for the files and any that are missing will be flagged. The patcher will also allow you to proceed whether or not it finds all the factory files so be sure this is what you need before you continue.
 8. You should then see the output from different stages of the script as it reconfigures the factory files. Depending on your system, it could take a couple of minutes to complete. You will get an OUTPUT folder with the reconstructed files inside. The patched files will be renamed to their factory names with almost similar sizes to the originals. If not then something went wrong.
 9. Using the VDI boot image, mount this in VirtualBox and open the disk as root. You now want to copy the files from the OUTPUT folder to the root of the bootable image. You should then have the three files plus a boot folder.
-10. Unmount the VDI, remove it from the Linux VM session and shut it down. If you want, you can also move the OUTPUT folder containing the patched binaries out of the VM to a safe place for future use otherwise it will be lost once the Linux VM is turned off.
+10. Unmount the VDI, remove it from the Linux VM session and shut it down.
+
+      >***Note:*** If you want, you can also move the OUTPUT folder containing the patched binaries out of the VM to a safe place for future use otherwise it will be lost once the Linux VM is turned off.
 
 At this point, you should now have a fully bootable image of the OS installer with the patched binaries inside. 
 
