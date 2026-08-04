@@ -32,21 +32,21 @@ A correct implementation will follow these three stages: -
 This is quite straightforward and involves SSH’ing into your CA10, mounting the recovery partition and downloading the compressed archive and boot packages. SSH access is crucial I’m afraid so without it, there is no way forward.
 1. Download the patch files for the version of your OS from [here](https://github.com/ThePopolou/Virtual-Director/releases).
 2. SSH into your CA10 and run the following commands: -
-```
-mkdir /mnt/media/disk
-mount /dev/md/recfs /mnt/media/disk
-```
-There will now be a “disk” folder under the already-shared “media” folder on your Director. The Director shares folders over the network via SMB/CIFS so this could either be accessed using a file browser (at \\director_IP\media\disk) or via an SFTP/SCP file client like WinSCP. You will need the following files: -
+   ```
+   mkdir /mnt/media/disk
+   mount /dev/md/recfs /mnt/media/disk
+   ```
+3. There will now be a “disk” folder under the already-shared “media” folder on your Director. The Director shares folders over the network via SMB/CIFS so this could either be accessed using a file browser (at \\director_IP\media\disk) or via an SFTP/SCP file client like WinSCP. You will need the following files: -
 
-**```recfs.tar.xz```**
-**```kernel-lb.deb```**
-**```kernel-modules-lb.deb```**
+   **```recfs.tar.xz```**
+   **```kernel-lb.deb```**
+   **```kernel-modules-lb.deb```**
 
-Close your file client, unmount the partition and clean up. Via SSH: -
-```
-umount -l /mnt/media/disk
-rmdir /mnt/media/disk
-```
+4. Close your file client, unmount the partition and clean up. Via SSH: -
+   ```
+   umount -l /mnt/media/disk
+   rmdir /mnt/media/disk
+   ```
 
 At this stage, I’d recommend saving these three files somewhere for safekeeping and making copies to work with. Rename those copies to **```recfs_FACTORY.tar.xz```**, **```kernel-lb_FACTORY.deb```** and **```kernel-modules-lb_FACTORY.deb```**. It’s possible the recovery partition will contain an older version of the OS  than the one running but this is rare. There are workarounds if this is the case.
 
@@ -55,24 +55,21 @@ Access to a system running an updated Linux OS is now needed (***if you do not h
 
 1. In Linux, copy across the factory files and extract the downloaded patch files all to the same folder.
 2. In addition to your three factory files, you should also now have the following build files: -
-   1. ```unified_patcher.sh```
-   2. ```lb_boot_stick.vdi```
-   3. ```kernel-lb_PATCH.vcdiff```
-   4. ```kernel-modules-lb_PATCH.vcdiff```
-   5. ```recfs_PATCH.vcdiff```
 
-3. Please ensure **```xdelta3```** is installed on your Linux system.
-4. Make sure that the file names to the factory files all have **```_FACTORY```** appended to their names. The script will be looking for files with this name pattern when it runs.
-5. Open a terminal and from your folder start the script as root: -
+   **```unified_patcher.sh``` ```lb_boot_stick.vdi``` ```kernel-lb_PATCH.vcdiff``` ```kernel-modules-lb_PATCH.vcdiff``` ```recfs_PATCH.vcdiff```**
 
-```
-sudo ./unified_patcher.sh
-```
+4. Please ensure **```xdelta3```** is installed on your Linux system.
+5. Make sure that the file names to the factory files all have **```_FACTORY```** appended to their names. The script will be looking for files with this name pattern when it runs.
+6. Open a terminal and from your folder start the script as root: -
 
-6. The script will check its directory for the files and any that are missing will be flagged. The patcher will also allow you to proceed whether or not it finds all the factory files so be sure this is what you need before you continue.
-7. You should then see the output from different stages of the script as it reconfigures the factory files. Depending on your system, it could take a couple of minutes to complete. You will get an OUTPUT folder with the reconstructed files inside. The patched files will be renamed to their factory names with almost similar sizes to the originals. If not then something went wrong.
-8. Using the VDI boot image, mount this in VirtualBox and open the disk as root. You now want to copy the files from the OUTPUT folder to the root of the bootable image. You should then have the three files plus a boot folder.
-9. Unmount the VDI, remove it from the Linux VM session and shut it down. If you want, you can also move the OUTPUT folder containing the patched binaries out of the VM to a safe place for future use otherwise it will be lost once the Linux VM is turned off.
+   ```
+   sudo ./unified_patcher.sh
+   ```
+
+7. The script will check its directory for the files and any that are missing will be flagged. The patcher will also allow you to proceed whether or not it finds all the factory files so be sure this is what you need before you continue.
+8. You should then see the output from different stages of the script as it reconfigures the factory files. Depending on your system, it could take a couple of minutes to complete. You will get an OUTPUT folder with the reconstructed files inside. The patched files will be renamed to their factory names with almost similar sizes to the originals. If not then something went wrong.
+9. Using the VDI boot image, mount this in VirtualBox and open the disk as root. You now want to copy the files from the OUTPUT folder to the root of the bootable image. You should then have the three files plus a boot folder.
+10. Unmount the VDI, remove it from the Linux VM session and shut it down. If you want, you can also move the OUTPUT folder containing the patched binaries out of the VM to a safe place for future use otherwise it will be lost once the Linux VM is turned off.
 
 At this point, you should now have a fully bootable image of the OS installer with the patched binaries inside. 
 
@@ -94,36 +91,37 @@ The following steps are the same for both hypervisors: -
 **VirtualBox**
 1. Open a command prompt in the VirtualBox program folder (```C:\Program Files\Oracle\VirtualBox```) and (assuming the name of your VM is **```CA10```** and the MAC you selected is **```000FFFA1B2C3```**), run the following commands: -
 
-```
-VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemVendor" "Control4"
-VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "Control4 CA-10 Automation Controller"
-VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSerial" "000FFFA1B2C3"
-VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemFamily" "Automation Controller"
-VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSKU" "C4-CA10"
-```
->***Optional*** - you can add a serial port to monitor the boot process, diagnostic logging and use an interactive console. This is done in the VM settings by enabling Port 1, using the first available COM port of your local machine and set the Port Mode to “Host Pipe”. The path address will then be \\.\pipe\serial1 (serial1 for COM1, serial2 for COM2, etc..). Then using a telnet client, you can connect to that port (at 115200 bps) after the VM has been started. 
+   ```
+   VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemVendor" "Control4"
+   VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct" "Control4 CA-10 Automation Controller"
+   VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSerial" "000FFFA1B2C3"
+   VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemFamily" "Automation Controller"
+   VBoxManage setextradata CA10 "VBoxInternal/Devices/efi/0/Config/DmiSystemSKU" "C4-CA10"
+   ```
+   >***Optional*** - you can add a serial port to monitor the boot process, diagnostic logging and use an interactive console. This is done in the VM settings by enabling Port 1, using the first available COM port of your local machine and set the Port Mode to “Host Pipe”. The path address will then be \\.\pipe\serial1 (serial1 for COM1, serial2 for COM2, etc..). Then using a telnet client, you can connect to that port (at 115200 bps) after the VM has been started. 
 
 **VMware ESXi/vSphere**
 1. With the SATA drives added, a SATA controller will also be added so you can remove the default SCSI controller.
 2. In vSphere, edit the settings for the VM and select the VM Options tab. Make sure under Boot Options “EFI” is selected for Firmware.
 3. In the same tab, under Advanced, edit the Configuration Parameters and create two new entries with the following values: - 
-```
-SMBIOS.noOEMstrings = "TRUE"
-smbios.addHostVendor = "FALSE"
-```
+   ```
+   SMBIOS.noOEMstrings = "TRUE"
+   smbios.addHostVendor = "FALSE"
+   ```
 4. The “uuid.bios” entry in the vmx file will also need to be updated to reflect the MAC address that you chose and previously configured for the VM NIC. In the case of ESXi, SSH into the server (or use WinSCP), navigate to the VM directory and edit the VMX configuration file to make sure the entry matches the MAC address: -
-   1. The format is **```uuid.bios = "00 0f ff xx xx xx ee 0f-ac e2 d9 2c a3 b1 63 bb"```** where “xx” is the remaining hexadecimals to your MAC address. So based on the earlier MAC, that line will then be modified to **```uuid.bios = "00 0f ff a1 b2 c3 ee 0f-ac e2 d9 2c a3 b1 63 bb"```**.
-5. Use VirtualBox to convert the VDI file to VMDK: -
-```
-VBoxManage.exe clonehd lb_boot_stick.vdi lb_boot_stick_converted.vmdk --format VMDK
-```
-6. Upload the VMDK to the VM folder on the ESXi server, import it and then delete the original file: -
-```
-vmkfstools -i lb_boot_stick_converted.vmdk -d thin lb_boot_stick.vmdk && rm lb_boot_stick_converted.vmdk
-```
->***Optional*** - adding a serial port is also quite simple and helpful. The only exception is that the serial port is mapped to the IP address of the ESXi host. So, in the VM settings, select “Use Network”, make sure it is “connected” and “connected at power on”, set the direction to “Server” and enter **```telnet://5000```** for the Port URI. Click “Yield on CPU poll”. To connect to it, use a telnet client pointed at the ESXI server IP on port 5000.
+   * The format is **```uuid.bios = "00 0f ff xx xx xx ee 0f-ac e2 d9 2c a3 b1 63 bb"```** where “xx” is the remaining hexadecimals to your MAC address. So based on the earlier MAC, that line will then be modified to **```uuid.bios = "00 0f ff a1 b2 c3 ee 0f-ac e2 d9 2c a3 b1 63 bb"```**.
 
-7. If you find you cannot connect over Serial, you may need to enable the Firewall rule “VM serial port connected over network”. 
+6. Use VirtualBox to convert the VDI file to VMDK: -
+   ```
+   VBoxManage.exe clonehd lb_boot_stick.vdi lb_boot_stick_converted.vmdk --format VMDK
+   ```
+7. Upload the VMDK to the VM folder on the ESXi server, import it and then delete the original file: -
+   ```
+   vmkfstools -i lb_boot_stick_converted.vmdk -d thin lb_boot_stick.vmdk && rm lb_boot_stick_converted.vmdk
+   ```
+   >***Optional*** - adding a serial port is also quite simple and helpful. The only exception is that the serial port is mapped to the IP address of the ESXi host. So, in the VM settings, select “Use Network”, make sure it is “connected” and “connected at power on”, set the direction to “Server” and enter **```telnet://5000```** for the Port URI. Click “Yield on CPU poll”. To connect to it, use a telnet client pointed at the ESXI server IP on port 5000.
+
+8. If you find you cannot connect over Serial, you may need to enable the Firewall rule “VM serial port connected over network”. 
 
 ## Wrap-up
 When either VM system boots, you will see the kernel logging to the VM console screen. Not all of this is shown because Control4 preferred to send this over the serial and it's the same here. If you configured the VM with a serial port then you should see the entire boot plus the factory scripts (i.e.: creating the raid array, partitions, the filesystem and OS packages installing etc.). It will reboot twice automatically before then arriving at a login prompt.
